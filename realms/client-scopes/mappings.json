@@ -1,0 +1,10 @@
+[
+    {
+        "id": "b412d455-0920-4520-a390-16eb93e792ec",
+        "name": "Admin",
+        "description": "Admin",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "airflow"
+    }
+]

@@ -1,0 +1,62 @@
+version: '3.7'
+volumes:
+    airflowdb: {}
+    logs: {}
+services:
+    postgres:
+        image: postgres:11.5
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=airflow
+            - POSTGRES_DB=airflow
+            - PGDATA=/var/lib/postgresql/data/pgdata
+        volumes:
+          - airflowdb:/var/lib/postgresql/data
+    keycloak:
+        image: quay.io/keycloak/keycloak:11.0.3
+        environment: 
+            - DB_USER=postgres
+            - DB_PASSWORD=airflow
+            - DB_ADDR=postgres
+            - DB_VENDOR=POSTGRES
+            - DB_DATABASE=airflow
+            - KEYCLOAK_USER=admin
+            - KEYCLOAK_PASSWORD=admin
+        depends_on:
+            - postgres
+        entrypoint:
+            - "/opt/jboss/tools/docker-entrypoint.sh"
+        command: 
+            -  "-b"
+            - "0.0.0.0"
+        volumes:
+            - ./realms:/tmp/realms
+        ports:
+            - "8080:8080"
+    webserver:
+        build: .
+        restart: always
+        depends_on:
+            - postgres
+        environment:
+            - LOAD_EX=n
+            - EXECUTOR=Local
+        volumes:
+            - ./dags:/opt/airflow/dags
+            - ./logs:/opt/airflow/logs
+            - ./plugins:/opt/airflow/plugins
+            - ./airflow.cfg:/opt/airflow/airflow.cfg
+            - ./webserver_config.py:/opt/airflow/webserver_config.py
+            - ./manager.py:/home/airflow/.local/lib/python3.8/site-packages/flask_appbuilder/security/manager.py
+            - ./navbar.html:/home/airflow/.local/lib/python3.8/site-packages/airflow/www/templates/appbuilder/navbar.html
+            - ./navbar_right.html:/home/airflow/.local/lib/python3.8/site-packages/airflow/www/templates/appbuilder/navbar_right.html
+        ports:
+            - "8280:8280"
+            - "8973:8973"
+        command: embedded
+        healthcheck:
+            test: ["CMD-SHELL", "[ -f /opt/airflow/airflow-webserver.pid ]"]
+            interval: "20s"
+            timeout: "20s"
+            retries: 3
+
