@@ -48,7 +48,7 @@ Each ML/AI component to be integrated in the "logic" of DAG created at the step 
 
 An example is "urbanite_data_poc_final2.py" in which a DAG invokes API of a generic component (AI/ML) using base operators (HTTPSensor, HTTPOperator).
 
-So the URBANITE Controller invokes respectivelly:
+So the Controller invokes respectivelly:
 - API "job" => to start a long-term execution in the AI/ML component by http/operator.
 - API "status" => to get periodically "status" of the long-term execution by http/sensor.
 - API "result" => to get the "location" of the result when AI/ML component has been completed long-term execution.
