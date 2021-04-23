@@ -1,5 +1,5 @@
-# URBANITE Controller (Airflow)
-This repository contains the docker-compose used by the URBANITE Controller (Airflow) secured by Keycloak IDM.
+# Controller (Airflow)
+This repository contains the docker-compose used by the Controller (Airflow) secured by Keycloak IDM.
 The docker-compose uses as internal components these 3: Airflow as Controller, Keycloak as IDM, PostgreSQL as meta-data storage DBMS.
 
 
@@ -26,10 +26,10 @@ $ docker-compose up -d
 ```
 
 ## First Configuration
-1. Modify (if necessary - See [docker-compose](https://git.code.tecnalia.com/urbanite/private/wp3-data-management/demo/airflow-keycloak/-/blob/main/docker-compose.yaml), [airflow.cfg](https://git.code.tecnalia.com/urbanite/private/wp3-data-management/demo/airflow-keycloak/-/blob/main/airflow.cfg)) host and ports: keycloak:8080, airflow:8280
+1. Modify (if necessary - See docker-compose, airflow.cfg host and ports: keycloak:8080, airflow:8280
 2. Start container docker
 2. Create manually realm 'airflow' (if needed) on http://keycloak:8080/
-3. Execute script to create groups/roles into keycloak docker istance (if needed - See [import-realm-data](https://git.code.tecnalia.com/urbanite/private/wp3-data-management/demo/airflow-keycloak/-/blob/main/_README.md#import-realm-data))
+3. Execute script to create groups/roles into keycloak docker istance (if needed - See [import-realm-data])
 4. Test Airflow is UP/RUNNING on http://airflow:8280/
 
 ### DAG 
