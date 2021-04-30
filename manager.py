@@ -272,6 +272,18 @@ class BaseSecurityManager(AbstractSecurityManager):
         # Setup Flask-Jwt-Extended
         self.jwt_manager = self.create_jwt_manager(app)
 
+
+    def getOauthParams(self):
+        """
+            This method return Oauth Parameters for AUTH_OAUTH (remote) MMA
+        """
+        if self.auth_type == AUTH_OAUTH:
+            for _provider in self.oauth_providers:
+                remote_app = _provider["remote_app"]
+                log.debug("OAuth parameters {0}".format(remote_app))
+                return remote_app
+
+
     def create_login_manager(self, app) -> LoginManager:
         """
             Override to implement your custom login manager instance
