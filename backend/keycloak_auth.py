@@ -36,37 +36,43 @@ T = TypeVar("T", bound=Callable)  # pylint: disable=invalid-name
 
 
 def auth_current_user() -> Optional[User]:
-    #print("\n### 1. keycloak_auth.auth_current_user() ")
+    print("\n## 1. keycloak_auth.auth_current_user() ")
     """Authenticate and set current user if Authorization header exists"""
     auth = request.authorization
-    #print(f"\n### 2. keycloak_auth.auth_current_user() => request.authorization: {auth} ")
+    print(f"\n## 2. keycloak_auth.auth_current_user() => request.authorization: {auth} ")
 	
-    if auth is None or not auth.username or not auth.password:
+    #if auth is None or not auth.username or not auth.password:
+    if auth is None or (not 'access_token' in auth and not 'username' in auth) :
         return None
 
     ab_security_manager = current_app.appbuilder.sm
     user = None
     if user is None:
         oauth_providers = ab_security_manager.getOauthParams()
-        
-        url = oauth_providers["access_token_url"]
-        reqToken = {'client_id': oauth_providers["client_id"], 
-					'client_secret': oauth_providers["client_secret"],
-					'username': auth.username,
-					'password': auth.password,
-					'grant_type': 'password'}
-        resToken = requests.post(url, data = reqToken)
-        resTokenJSON = json.loads(resToken.text)
-        access_token = resTokenJSON['access_token']
-        
+        if not 'access_token' in auth:
+            url = oauth_providers["access_token_url"]
+            reqToken = {'client_id': oauth_providers["client_id"], 
+            			'client_secret': oauth_providers["client_secret"],
+            			'username': auth.username,
+            			'password': auth.password,
+            			'grant_type': 'password'}
+            resToken = requests.post(url, data = reqToken)
+            resTokenJSON = json.loads(resToken.text)
+            access_token = resTokenJSON['access_token']
+            print(f"\n## 3.A  access_token NOT in auth (called oauth) => {access_token}")
+        else:
+            print(f"\n## 3.B  access_token in auth => {auth.access_token}")
+            access_token = auth.access_token
+
         url = oauth_providers["api_base_url"] + "userinfo"
         reqUserinfo = {'access_token': access_token}
         resUserinfo = requests.post(url, data = reqUserinfo)
         resUserinfoJSON = json.loads(resUserinfo.text)
-        resUserinfoJSON['username'] = auth.username
+        print(f"\n\n## 4. USERINFO is => {resUserinfoJSON}")
+        resUserinfoJSON['username'] = resUserinfoJSON['preferred_username']
         
         user = ab_security_manager.auth_user_oauth(resUserinfoJSON)
-        #print(f"\n### 3. keycloak_auth.auth_user_oauth() => {user} \n")
+        print(f"\n## 5. keycloak_auth.auth_user_oauth() user is => {user} \n")
     if user is not None:
         login_user(user, remember=False)
     return user
