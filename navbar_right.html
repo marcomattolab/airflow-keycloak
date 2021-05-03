@@ -78,27 +78,19 @@
     <ul class="dropdown-menu">
       <li><a href="{{appbuilder.get_url_for_userinfo}}"><span class="material-icons">account_circle</span>{{_("Your Profile")}}</a></li>
       <li role="separator" class="divider"></li>
+	  <li>
       <!-- [FIX ABOUT LOGOUT] -->
-	  <!-- <li><a href="{{appbuilder.get_url_for_logout}}"><span class="material-icons">exit_to_app</span>{{_("Log Out")}}</a></li> -->
-	    <script language="JavaScript">
-	       function force_logout_keycloak(url) { window.location.href = url; }
-	    </script>
-	    <li>
-		<a href="#" onclick="force_logout_keycloak('http://keycloak:8080/auth/realms/airflow/protocol/openid-connect/logout?redirect_uri=http://airflow:8280/logout')">
-		  <span class="material-icons">exit_to_app</span>{{_("Log Out")}}
-		</a>
-	    </li>
+	  <!-- <a href="{{appbuilder.get_url_for_logout}}"><span class="material-icons">exit_to_app</span>{{_("Log Out")}}</a></li> -->
+	       <a href="{{appbuilder.sm.getLoginURL('logout')}}")'><span class="material-icons">exit_to_app</span>{{_("Log Out")}}</a>
 	  <!-- [/FIX ABOUT LOGOUT] -->	
+	  </li>
     </ul>
   </li>
 {% else %}
   <li>
-	<!-- [FIX ABOUT LOGIN] -->
+	<!-- [FIX ABOUT LOGOUT] -->
     <!-- <a href="{{appbuilder.get_url_for_login}}"><span class="material-icons">login</span>{{_("Log In")}}</a> -->
-	<script language="JavaScript">
-	    function force_loging_keycloak(url) { window.location.href = url; }
-	</script>
-	<a href="#"  onclick="force_loging_keycloak('http://keycloak:8080/auth/realms/airflow/protocol/openid-connect/logout?redirect_uri=http://airflow:8280/login')"><span class="material-icons">login</span>{{_("Log In")}}</a> 	
-	<!-- [/FIX ABOUT LOGIN] -->	
+	     <a href="{{appbuilder.sm.getLoginURL('login')}}"><span class="material-icons">login</span>{{_("Log In")}}</a> 	
+	<!-- [/FIX ABOUT LOGOUT] -->	
   </li>
 {% endif %}
