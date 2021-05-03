@@ -9,8 +9,8 @@ The docker-compose uses as internal components these 3: Airflow as Controller, K
 3. [Configuration](#configuration)
 4. [Development](#development)
     1. [DAG](#dag)
-    1. [RESTFull APIs](#restfull-apis)
-    1. [Workflow Lifecycle](#workflow-lifecycle)
+    2. [RESTFull APIs](#restfull-apis)
+    3. [Workflow Lifecycle](#workflow-lifecycle)
 4. [License](#license)
 
 
