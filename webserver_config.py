@@ -95,7 +95,8 @@ OAUTH_PROVIDERS = [
      'access_token_url': 'http://keycloak:8080/auth/realms/airflow/protocol/openid-connect/token',
      'authorize_url': 'http://keycloak:8080/auth/realms/airflow/protocol/openid-connect/auth',
      'client_id': 'airflow-client',
-	 'client_secret':'9e661802-3356-44f3-8960-1dc890abd2bc'
+     'client_secret':'9e661802-3356-44f3-8960-1dc890abd2bc',
+     'airflow_base_url' : 'http://airflow:8280/'
     }
   }
 ]
@@ -121,6 +122,7 @@ OAUTH_PROVIDERS = [
 # Please make sure to remove "navbar_color" configuration from airflow.cfg
 # in order to fully utilize the theme. (or use that property in conjunction with theme)
 # APP_THEME = "bootstrap-theme.css"  # default bootstrap
+APP_THEME = "urbanite.css" 
 # APP_THEME = "amelia.css"
 # APP_THEME = "cerulean.css"
 # APP_THEME = "cosmo.css"
