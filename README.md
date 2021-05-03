@@ -26,7 +26,7 @@ $ docker-compose up -d
 ```
 
 ## First Configuration
-1. Modify (if necessary - See docker-compose, airflow.cfg host and ports: keycloak:8080, airflow:8280
+1. Modify (if necessary - See docker-compose, airflow.cfg, webserver_config.py for host and port specifications: keycloak:8080, airflow:8280
 2. Start container docker
 2. Create manually realm 'airflow' (if needed) on http://keycloak:8080/
 3. Execute script to create groups/roles into keycloak docker istance (if needed - See [import-realm-data])
