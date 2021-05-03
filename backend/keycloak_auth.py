@@ -42,14 +42,15 @@ def auth_current_user() -> Optional[User]:
     print(f"\n## 2. keycloak_auth.auth_current_user() => request.authorization: {auth} ")
 	
     #if auth is None or not auth.username or not auth.password:
-    if auth is None or (not 'access_token' in auth and not 'username' in auth) :
+    if auth is None or ((not 'access_token' in auth or not 'token' in auth) and (not 'username' in auth and not 'password' in auth)):
+        print(f"\n## 2.5 FAILED AUTH - NO MANDATORY PARAMETERS: (username + password | token | access_token ) \n\n")
         return None
 
     ab_security_manager = current_app.appbuilder.sm
     user = None
     if user is None:
         oauth_providers = ab_security_manager.getOauthParams()
-        if not 'access_token' in auth:
+        if not 'access_token' in auth and not 'token' in auth:
             url = oauth_providers["access_token_url"]
             reqToken = {'client_id': oauth_providers["client_id"], 
             			'client_secret': oauth_providers["client_secret"],
@@ -61,8 +62,8 @@ def auth_current_user() -> Optional[User]:
             access_token = resTokenJSON['access_token']
             print(f"\n## 3.A  access_token NOT in auth (called oauth) => {access_token}")
         else:
-            print(f"\n## 3.B  access_token in auth => {auth.access_token}")
-            access_token = auth.access_token
+            print(f"\n## 3.B  access_token/token in auth => {auth}")
+            access_token = auth.access_token if 'access_token' in auth else auth.token
 
         url = oauth_providers["api_base_url"] + "userinfo"
         reqUserinfo = {'access_token': access_token}
