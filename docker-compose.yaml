@@ -48,6 +48,8 @@ services:
             - ./airflow.cfg:/opt/airflow/airflow.cfg
             - ./webserver_config.py:/opt/airflow/webserver_config.py
             - ./manager.py:/home/airflow/.local/lib/python3.8/site-packages/flask_appbuilder/security/manager.py
+            - ./themes:/home/airflow/.local/lib/python3.8/site-packages/flask_appbuilder/static/appbuilder/css/themes
+            - ./switch.07b9373717bbc645aa21.css:/home/airflow/.local/lib/python3.8/site-packages/airflow/www/static/dist/switch.07b9373717bbc645aa21.css
             - ./backend:/home/airflow/.local/lib/python3.8/site-packages/airflow/api/auth/backend
             - ./navbar.html:/home/airflow/.local/lib/python3.8/site-packages/airflow/www/templates/appbuilder/navbar.html
             - ./navbar_right.html:/home/airflow/.local/lib/python3.8/site-packages/airflow/www/templates/appbuilder/navbar_right.html
