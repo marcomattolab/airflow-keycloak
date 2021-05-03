@@ -5,10 +5,13 @@ The docker-compose uses as internal components these 3: Airflow as Controller, K
 
 ## Table of Contents
 1. [Docker](#docker)
-1. [Configuration](#configuration)
+2. [Docker-compose](#docker-compose)
+3. [Configuration](#configuration)
+4. [Development](#development)
     1. [DAG](#dag)
-    1. [RESTFull APIs](#apis)
-1. [License](#license)
+    1. [RESTFull APIs](#restfull-apis)
+    1. [Workflow Lifecycle](#workflow-lifecycle)
+4. [License](#license)
 
 
 ## Docker
@@ -25,12 +28,30 @@ Run docker image:
 $ docker-compose up -d
 ```
 
-## First Configuration
+## Docker-compose
+The provided docker-compose.yml build and deploy the application with an instance of the IDM (Keycloak).
+
+Run the following command to use the docker-compose:
+
+
+```bash
+$ cd airflow-keycloak
+$ docker-compose up
+```
+
+## Configuration
+This section summarizes the basic steps for first configurations needed to integrate controller (Airflow) and IDM (Keycloak) into the ecosystem.
+
 1. Modify (if necessary - See docker-compose, airflow.cfg, webserver_config.py for host and port specifications: keycloak:8080, airflow:8280
 2. Start container docker
 2. Create manually realm 'airflow' (if needed) on http://keycloak:8080/
 3. Execute script to create groups/roles into keycloak docker istance (if needed - See [import-realm-data])
 4. Test Airflow is UP/RUNNING on http://airflow:8280/
+
+## Development
+
+This section summarizes the key concepts related to the controller (Airflow) and how develop a workflow in term of Restfull API needed to be available in the ecosystem AI/ML components.
+
 
 ### DAG 
 Create a DAG (Directed Acyclic Graph), a file python (ex. "component_one.py"), for each ML/AI component that should be integrated in the controller (put this file inside the directory "dags" to deploy/validate file).
@@ -53,6 +74,16 @@ So the Controller invokes respectivelly:
 - API "status" => to get periodically "status" of the long-term execution by http/sensor.
 - API "result" => to get the "location" of the result when AI/ML component has been completed long-term execution.
 
+## Workflow Lifecycle
+
+This section summarizes the Controller Workflow Lifecycle (5 phases):
+
+| Phase Name| Tool | Phase Description |
+| :--- | :--- | :--- |
+| Design | IDE | Creation/Change of workflow with an external Python IDE |
+| Deploy | SSH | Deployment of workflow, python file, inside a specific folder into the controller |
+| Run | Controller | Execution of workflow invoked manually by UI or by Restfull API |
+| Monitoring | Controller | Monitoring of logs, metadata and outputs based on UI |
 
 ## License
 
