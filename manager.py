@@ -283,6 +283,22 @@ class BaseSecurityManager(AbstractSecurityManager):
                 log.debug("OAuth parameters {0}".format(remote_app))
                 return remote_app
 
+    def getLoginURL(self, redirectURI):
+        """
+            This method return the logout URI (BugFix logout from Airflow/Keycloak) MMA
+			
+            :param redirectURI: redirect URI  (login | logout)
+        """
+		#config = self.appbuilder.get_app.config
+		#print(f"\n\n ### config => {config} \n\n")
+        remoteApp = self.appbuilder.get_app.config['OAUTH_PROVIDERS'][0]["remote_app"]
+        api_base_url = remoteApp["api_base_url"]
+        airflow_base_url = remoteApp["airflow_base_url"]
+		# 'http://keycloak:8080/auth/realms/airflow/protocol/openid-connect/logout?redirect_uri=http://airflow:8280/logout'
+        redirectURI = api_base_url + "" + "logout" + "?redirect_uri=" + airflow_base_url + "" + redirectURI
+        #print(f"\n\n\n  ### redirectURI ==> {redirectURI} \n\n")
+        return redirectURI
+
 
     def create_login_manager(self, app) -> LoginManager:
         """
