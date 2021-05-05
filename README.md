@@ -50,7 +50,7 @@ This section summarizes the basic steps for first configurations needed to integ
 1. Modify (if necessary - See [docker-compose](https://github.com/marcomattolab/airflow-keycloak/edit/main/docker-compose.yaml), [airflow.cfg](https://github.com/marcomattolab/airflow-keycloak/edit/main/airflow.cfg), [webserver_config.py](https://github.com/marcomattolab/airflow-keycloak/edit/main/webserver_config.py)) host,ports and IDM parameters (ex. keycloak:8080, airflow:8280, etc)
 2. Start container docker
 2. Create manually realm 'airflow' (if needed) on http://keycloak:8080/
-3. Execute script to create groups/roles into keycloak docker istance (if needed - See [import-realm-data]https://github.com/marcomattolab/airflow-keycloak/edit/main/_READM_FULL.md#import-realm-data))
+3. Execute script to create groups/roles into keycloak docker istance (if needed - See [import-realm-data](https://github.com/marcomattolab/airflow-keycloak/edit/main/_READM_FULL.md#import-realm-data) )
 4. Test Airflow is UP/RUNNING on http://airflow:8280/
 
 
