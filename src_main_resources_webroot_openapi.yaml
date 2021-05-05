@@ -1,0 +1,234 @@
+openapi: 3.0.0
+info:
+  version: ${project.version}
+  title: piveau scheduling
+  x-logo:
+    url: "images/logo"
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /triggers:
+    get:
+      description: Get a list of pipe ids and scheduled triggers.
+      summary: Map of pipe ids and triggers
+      operationId: listTriggers
+      responses:
+        '200':
+          description: The map of pipe ids and triggers
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    anyOf:
+                      - $ref: '#/components/schemas/IntervalTrigger'
+                      - $ref: '#/components/schemas/CronTrigger'
+                      - $ref: '#/components/schemas/SpecificTrigger'
+    put:
+      description: Bulk update of all triggers
+      summary: Bulk update
+      operationId: bulkUpdate
+      requestBody:
+        description: The trigger objects
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  anyOf:
+                    - $ref: '#/components/schemas/IntervalTrigger'
+                    - $ref: '#/components/schemas/CronTrigger'
+                    - $ref: '#/components/schemas/SpecificTrigger'
+      responses:
+        '200':
+          description: Triggers updated successfully.
+  /triggers/{pipeId}:
+    parameters:
+      - name: pipeId
+        in: path
+        description: Id of the pipe to trigger.
+        required: true
+        schema:
+          type: string
+    get:
+      description: Resturns all triggers for pipe with pipeId.
+      summary: Get triggers
+      operationId: getTriggers
+      responses:
+        '200':
+          description: The trigger objects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  anyOf:
+                    - $ref: '#/components/schemas/IntervalTrigger'
+                    - $ref: '#/components/schemas/CronTrigger'
+                    - $ref: '#/components/schemas/SpecificTrigger'
+        '404':
+          description: Pipe not found.
+    put:
+      description: Create or update triggers for pipe with pipeId.
+      summary: Create or update triggers
+      operationId: createOrUpdateTriggers
+      requestBody:
+        description: The trigger objects
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                anyOf:
+                  - $ref: '#/components/schemas/ImmediateTrigger'
+                  - $ref: '#/components/schemas/IntervalTrigger'
+                  - $ref: '#/components/schemas/CronTrigger'
+                  - $ref: '#/components/schemas/SpecificTrigger'
+      responses:
+        '200':
+          description: Triggers updated successfully.
+        '201':
+          description: Triggers created successfully.
+        '404':
+          description: Pipe not found.
+    delete:
+      description: Delete previously created triggers.
+      summary: Delete triggers
+      operationId: deleteTriggers
+      responses:
+        '200':
+          description: Triggers succesfully deleted.
+        '404':
+          description: Pipe not found.
+  /triggers/{pipeId}/{triggerId}/{status}:
+    parameters:
+      - name: pipeId
+        in: path
+        description: Id of the pipe to trigger.
+        required: true
+        schema:
+          type: string
+      - name: triggerId
+        in: path
+        description: Id of the trigger.
+        required: true
+        schema:
+          type: string
+      - name: status
+        in: path
+        description: Status to set for the trigger.
+        required: true
+        schema:
+          type: string
+          enum:
+            - enable
+            - disable
+    get:
+      description: Set status of a trigger.
+      summary: Set status
+      operationId: setTriggerStatus
+      responses:
+        '200':
+          description: Trigger status successfully set. The body contains the old status.
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: Pipe or Trigger not found. Body contains more details.
+        '409':
+          description: Status already set or unknwon.
+
+components:
+  schemas:
+    Trigger:
+      description: A trigger object.
+      type: object
+      required:
+        - id
+        - status
+      properties:
+        id:
+          description: A unique identifier within the scope of the pipe
+          type: string
+        status:
+          description: Indicating the status of the trigger
+          type: string
+          enum:
+            - enabled
+            - disabled
+        configs:
+          description: An object containing configurations to merge into speicific segments
+          type: object
+          additionalProperties:
+            type: object
+
+    ImmediateTrigger:
+      description: A trigger that is triggered immediately
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Trigger'
+      properties:
+        status:
+          description: MUST BE enabled
+          type: string
+          enum:
+            - enabled
+    IntervalTrigger:
+      description: Am interval based trigger
+      type: object
+      required:
+        - interval
+      allOf:
+        - $ref: '#/components/schemas/Trigger'
+      properties:
+        interval:
+          type: object
+          required:
+            - value
+            - unit
+          properties:
+            value:
+              type: integer
+            unit:
+              type: string
+        next:
+          description: The first trigger
+          type: string
+          format: date-time
+    CronTrigger:
+      description: A cron based trigger definition
+      type: object
+      required:
+        - cron
+      allOf:
+        - $ref: '#/components/schemas/Trigger'
+      properties:
+        cron:
+          description: The cron systax
+          type: string
+        next:
+          description: The first trigger
+          type: string
+          format: date-time
+    SpecificTrigger:
+      description: A list of specific trigger times
+      type: object
+      required:
+        - specific
+      allOf:
+        - $ref: '#/components/schemas/Trigger'
+      properties:
+        specific:
+          description: List of specific date and time triggers
+          type: array
+          items:
+            type: string
+            format: date-time
